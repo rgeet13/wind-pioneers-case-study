@@ -25,6 +25,7 @@
         // Event handler for receiving messages from the server
         socket.onmessage = function(event) {
             const message = JSON.parse(event.data).message;
+            console.log(message)
             displayMessage(message);
         };
 

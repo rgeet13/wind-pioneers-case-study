@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>File List</h1>
+    <ul>
+        {% for file in files %}
+            <li>
+                {{ file.name }} - {{ file.id }}
+                <button class="view-file-btn" data-file-name="{{ file.name }}" data-file-id="{{ file.id }}">View File</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        $(document).ready(function() {
+            $('.view-file-btn').click(function() {
+                var fileName = $(this).data('file-name');
+                var fileId = $(this).data('file-id');
+                const csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: '/app/view-file/',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    data: JSON.stringify({ file_name: fileName, file_id: fileId }),
+                    success: function(response) {
+                        alert('File view request sent successfully');
+                        // You can handle the response here, such as opening a new window to view the file
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error sending file view request');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
