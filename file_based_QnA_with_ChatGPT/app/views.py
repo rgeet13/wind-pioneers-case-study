@@ -24,7 +24,6 @@ def view_file(request):
     try:
         if request.method == 'POST':
             data = request.body.decode('utf-8')
-            print("Data -- ", data)
             try:
                 json_data = json.loads(data)
             except json.JSONDecodeError as e:
@@ -33,9 +32,8 @@ def view_file(request):
 
             file_name = json_data.get('file_name', None)
             file_id = json_data.get('file_id', None)
-            print("File id -- ", file_id, "Filename -- ", file_name)
             download_file(file_id, file_name)
-            return JsonResponse({'status': 'success', 'message': 'File downloaded'}, statu=201)
+            return JsonResponse({'status': 'success', 'message': 'File downloaded', 'file_name': file_name}, status=201)
     except Exception as e:
         print('Error:', e)
         return render(request, 'error.html', {'error_message': str(e)})

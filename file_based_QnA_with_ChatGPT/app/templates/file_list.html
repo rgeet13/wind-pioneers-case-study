@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File List</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>File List</h1>
@@ -33,26 +32,31 @@
             return cookieValue;
         }
 
-        $(document).ready(function() {
-            $('.view-file-btn').click(function() {
-                var fileName = $(this).data('file-name');
-                var fileId = $(this).data('file-id');
-                const csrftoken = getCookie('csrftoken');
-                $.ajax({
-                    url: '/app/view-file/',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken,
-                    },
-                    data: JSON.stringify({ file_name: fileName, file_id: fileId }),
-                    success: function(response) {
-                        alert('File view request sent successfully');
-                        // You can handle the response here, such as opening a new window to view the file
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Error sending file view request');
-                    }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.view-file-btn').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var fileName = this.getAttribute('data-file-name');
+                    var fileId = this.getAttribute('data-file-id');
+                    const csrftoken = getCookie('csrftoken');
+
+                    fetch('/app/view-file/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken,
+                        },
+                        body: JSON.stringify({ file_name: fileName, file_id: fileId }),
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = 'http://localhost:8000/app/chat/?file_name=' + fileName;
+                        } else {
+                            throw new Error('Error sending file view request');
+                        }
+                    })
+                    .catch(error => {
+                        alert(error.message);
+                    });
                 });
             });
         });

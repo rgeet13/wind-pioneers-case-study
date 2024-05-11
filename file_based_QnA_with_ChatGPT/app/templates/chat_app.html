@@ -11,15 +11,25 @@
     <ul id="chatMessages"></ul>
 
     <script>
+        function getParameterByName(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
         // WebSocket connection URL
         const wsUrl = 'ws://localhost:8000/ws/chat/';
-
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileName = urlParams.get('file_name');
         // Create a WebSocket connection
-        const socket = new WebSocket(wsUrl);
+        const socket = new WebSocket(wsUrl + '?file_name=' + encodeURIComponent(getParameterByName('file_name')));
 
         // Event handler for WebSocket connection open
         socket.onopen = function(event) {
             console.log('WebSocket connection opened');
+            if (fileName) {
+                // Send File name to server
+                socket.send(JSON.stringify({ file_name: fileName }));
+            }
         };
 
         // Event handler for receiving messages from the server

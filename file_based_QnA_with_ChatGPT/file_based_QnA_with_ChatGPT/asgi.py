@@ -9,9 +9,6 @@ from app.consumers import ChatConsumer
 
 django_asgi_app = get_asgi_application()
 
-
-
-
 websocket_urlpatterns = [
     path('ws/chat/', ChatConsumer.as_asgi()),
 ]
