@@ -16,7 +16,8 @@ This is a file/document-based AI assistant chat app. Users can select files from
    - Save the Google credentials with the name client_secret.json in the app directory of the project.
 5. Run the application
    - python manage.py runserver
-6. Access the application at http://localhost:8000/app/.
+6. Access the application at http://localhost:8000/app/files/.
 
 
-
+# Main URL
+Users can access the file selection feature of the application by visiting http://localhost:8000/app/files/. This page allows users to select files from their drive and interact with the AI assistant using the selected file as context.
