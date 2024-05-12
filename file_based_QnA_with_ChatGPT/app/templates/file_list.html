@@ -4,17 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .view-file-btn {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        .view-file-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>File List</h1>
-    <ul>
-        {% for file in files %}
-            <li>
-                {{ file.name }} - {{ file.id }}
-                <button class="view-file-btn" data-file-name="{{ file.name }}" data-file-id="{{ file.id }}">View File</button>
-            </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>File ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.id }}</td>
+                    <td><button class="view-file-btn" data-file-name="{{ file.name }}" data-file-id="{{ file.id }}">Start</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <script>
         function getCookie(name) {

@@ -4,11 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Based Chat Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .chat-container {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .message.sent {
+            background-color: #e6f7ff;
+            text-align: right;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        #loader {
+            position: absolute; /* Position the loader */
+            top: 50%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Center exactly */
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <input type="text" id="messageInput">
-    <button onclick="sendMessage()">Send</button>
-    <ul id="chatMessages"></ul>
+    <div class="container">
+        <div class="chat-container" id="chatContainer"></div>
+        <div id="loader" style="display: none;">Loading...</div>
+        <input type="text" id="messageInput">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    
 
     <script>
         function getParameterByName(name) {
@@ -18,10 +85,9 @@
 
         // WebSocket connection URL
         const wsUrl = 'ws://localhost:8000/ws/chat/';
-        const urlParams = new URLSearchParams(window.location.search);
-        const fileName = urlParams.get('file_name');
+        const fileName = getParameterByName('file_name');
         // Create a WebSocket connection
-        const socket = new WebSocket(wsUrl + '?file_name=' + encodeURIComponent(getParameterByName('file_name')));
+        const socket = new WebSocket(wsUrl + '?file_name=' + encodeURIComponent(fileName));
 
         // Event handler for WebSocket connection open
         socket.onopen = function(event) {
@@ -36,6 +102,7 @@
         socket.onmessage = function(event) {
             const message = JSON.parse(event.data).message;
             console.log(message)
+            document.getElementById('loader').style.display = 'none'; // Hide loader
             displayMessage(message);
         };
 
@@ -48,16 +115,25 @@
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value;
+            if (!message.trim()) {
+                return; // Don't send empty messages
+            }
+            displayMessage('You: ' + message, 'sent'); // Display message immediately
+            messageInput.value = ''; // Clear input field
+            document.getElementById('loader').style.display = 'block'; // Show loader
             socket.send(JSON.stringify({ message: message }));
-            messageInput.value = '';
         }
+
+
 
         // Function to display a message in the chat UI
         function displayMessage(message) {
-            const chatMessages = document.getElementById('chatMessages');
-            const li = document.createElement('li');
-            li.textContent = message;
-            chatMessages.appendChild(li);
+            const chatContainer = document.getElementById('chatContainer');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.textContent = message;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
         }
     </script>
 </body>

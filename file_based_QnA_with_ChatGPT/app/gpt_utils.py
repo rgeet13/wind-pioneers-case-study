@@ -28,8 +28,8 @@ def create_vector_store_and_upload_files(file):
     )
     
     # You can print the status and the file counts of the batch to see the result of this operation.
-    print(file_batch.status)
-    print(file_batch.file_counts)
+    # print(file_batch.status)
+    # print(file_batch.file_counts)
     return vector_store.id
 
 def create_assistant():
@@ -89,7 +89,7 @@ def create_thread(file_path, query):
         )
         
         # The thread now has a vector store with that file in its tool resources.
-        print(thread.tool_resources.file_search)
+        # print(thread.tool_resources.file_search)
         return thread
     except Exception as e:
         print("Error in creating thread "+ str(e))

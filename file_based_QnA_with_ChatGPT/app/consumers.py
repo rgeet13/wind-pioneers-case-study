@@ -15,13 +15,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         file_path = os.path.join(settings.BASE_DIR, file_name)
         vector_store_id = create_vector_store_and_upload_files(file_path)
         assistant = create_assistant()
-        print('Assistant created:', assistant)
         updated_assistant = update_assistant(assistant.id, vector_store_id)
-        print('Assistant updated:', updated_assistant)
-        # thread = create_thread(file_path, "What is the document about ?")
-        # print('Thread created:', thread)
-        # response = get_response(updated_assistant.id, thread.id)
-        # print('Response:', response)
         self.updated_assistant_id = updated_assistant.id
         self.file_path = file_path
 
@@ -33,10 +27,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if 'message' in text_data_json:
             message = text_data_json['message']
             thread = create_thread(self.file_path, message)
-            response_message = f"Server Sent: {get_response(self.updated_assistant_id, thread.id)}"
-            # test = get_all_files_from_folder('13KSB55spACO_PyBswteQgiIZGm2ZRq2Q')
-            # test = download_file("1gSaujCfMHwaMlbiTvyId7ST25ltBf0jj", "Marksheet.pdf")
-            # print(type(test))
+            response_message = f"AI Assistant: {get_response(self.updated_assistant_id, thread.id)}"
             await self.send(text_data=json.dumps({
                 'message': response_message
             }))
